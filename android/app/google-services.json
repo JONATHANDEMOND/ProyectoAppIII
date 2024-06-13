@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "556139801769",
+    "firebase_url": "https://app-aranda-default-rtdb.firebaseio.com",
+    "project_id": "app-aranda",
+    "storage_bucket": "app-aranda.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556139801769:android:0586c33e2a61cae62b8db8",
+        "android_client_info": {
+          "package_name": "com.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4qqlF7CFvTsxAhKxEgj6F55TVUVHcIuw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:556139801769:android:cdf08ca6e32e95a72b8db8",
+        "android_client_info": {
+          "package_name": "com.example.proyecto_01"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4qqlF7CFvTsxAhKxEgj6F55TVUVHcIuw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

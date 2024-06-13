@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:proyecto_01/screens/Catalogo.dart';
-import 'package:proyecto_01/screens/Login.dart';
+import 'package:proyecto_01/screens/CatalogoScreen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:proyecto_01/screens/RegistroScreen.dart';
 
-void main (){
+Future<void> main () async {
+   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(Proyecto());
 }
 
@@ -36,29 +40,12 @@ class _HomeState extends State<Home> {
   int indice = 0;
   @override
   Widget build(BuildContext context) {
-   List <Widget> screens = [Cuerpo(context),const Login(),const Catalogo()];
-  
     return Scaffold(
       appBar: AppBar(
         title: Text("Monkey Pelis"),
         backgroundColor: Colors.white70,
       ),
-      body: screens[indice],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: indice,
-        onTap:(value) {
-          setState(() {
-            indice = value;
-          });
-        },
-        items: const[
-        BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label:"Home"),
-         BottomNavigationBarItem(icon: Icon(Icons.contact_mail_outlined), label:"Registro"),
-        BottomNavigationBarItem(icon: Icon(Icons.computer_rounded), label:"Catalogo"),
-       
-      ]),
-
-
+      body: Cuerpo(context),
     );
   }
 }
@@ -74,9 +61,10 @@ Widget Cuerpo( context){
   child: Column(
     children: [
       Text("Login", style: TextStyle(fontSize: 30, color: Color.fromARGB(237, 250, 0, 0) ),),
-      NickName(),
-      Password(),
-    Boton1(context)
+          CampoCorreo(context),
+          CampoContrasenia(context),
+          BotonGuardar(context),
+          BotonRegistro(context)
 
     ],
 
@@ -84,51 +72,72 @@ Widget Cuerpo( context){
   );
 }
 
-Widget NickName(){
-  return(
-    Container(
-      padding: EdgeInsets.all(10),
-      child: TextField(style: TextStyle(backgroundColor: Color.fromARGB(255, 214, 158, 233)),
-      decoration: InputDecoration(
-        hintText: "Ingresar NickName",
-        fillColor: Color.fromARGB(255, 30, 48, 85),
-      ),
+final TextEditingController _correo = TextEditingController();
+
+Widget CampoCorreo(context){
+  return Container(
+    padding: EdgeInsets.all(10),
+    child: (
+      TextField(
+        controller: _correo,
+      decoration: const InputDecoration(
+        hintText: "Ingrese Correo"),
     )
-  )
+    
+    ),
   );
 }
-
-Widget Password(){
+final TextEditingController _contrasenia= TextEditingController();
+Widget CampoContrasenia(context){
+   return Container(
+    padding: EdgeInsets.all(10),
+     child: (
+    TextField(
+        controller: _contrasenia,
+      decoration: const InputDecoration(
+        hintText: "Ingrese Contraseña"),
+       )
+     
+       ),
+   );
+}
+Widget BotonGuardar(context){
   return(
-    Container(
-      padding: EdgeInsets.all(10),
-      child: TextField(
-        obscureText: true,
-        style: TextStyle(backgroundColor: Color.fromARGB(255, 214, 158, 233)),
-      decoration: InputDecoration(
-        hintText: "Ingresar Pasword",
-        fillColor: Color(0xffb3a2b9),
-        filled: true
-      ),
-      keyboardType: TextInputType.multiline,
-    ),
-  )
+    FilledButton(onPressed: (){ login(context);
+      
+     
+    }, child: const Text("Login"))
+  );
+
+}
+Widget BotonRegistro(context){
+  return(
+    ElevatedButton(
+      style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(Colors.amber)),
+      onPressed: (){
+        Navigator.push(context, 
+        MaterialPageRoute(builder: 
+        (context)=> Registro()));
+      }, child: Text("Ir al Registro"))
   );
 }
 
-Widget Boton1( context) {
-  return ElevatedButton(
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Catalogo()),
-      );
-    },
-    style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.teal,
-      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-      textStyle: const TextStyle(fontSize: 16),
-    ),
-    child: const Text("Login"),
+Future<void> login(context) async {
+  try {
+  final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+    email: _correo.text,
+    password: _contrasenia.text
   );
+  ////////////////////navegacion
+   Navigator.push(context,MaterialPageRoute(builder: (context)=> Catalogo()));
+
+} on FirebaseAuthException catch (e) {
+  if (e.code == 'user-not-found') {
+    print('No user found for that email.');
+  } else if (e.code == 'wrong-password') {
+    print('Wrong password provided for that user.');
+  }
 }
+
+}
+
