@@ -122,22 +122,46 @@ Widget BotonRegistro(context){
   );
 }
 
-Future<void> login(context) async {
+Future<void> login(BuildContext context) async {
   try {
-  final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-    email: _correo.text,
-    password: _contrasenia.text
-  );
-  ////////////////////navegacion
-   Navigator.push(context,MaterialPageRoute(builder: (context)=> Catalogo()));
-
-} on FirebaseAuthException catch (e) {
-  if (e.code == 'user-not-found') {
-    print('No user found for that email.');
-  } else if (e.code == 'wrong-password') {
-    print('Wrong password provided for that user.');
+    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: _correo.text,
+      password: _contrasenia.text,
+    );
+    
+    // Navegación a la pantalla Catálogo
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Catalogo()));
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found') {
+      alert(context, const Text("Error"), const Text("No se encontró un usuario con ese correo."));
+    } else if (e.code == 'wrong-password') {
+      alert(context, const Text("Error"), const Text("Contraseña incorrecta para ese usuario."));
+    }
+  } catch (e) {
+    print(e);
+    alert(context, const Text("Error"), const Text("Ocurrió un error inesperado. Por favor, inténtelo de nuevo."));
   }
 }
+////////////////alertas//////////////faltan
+///*
 
+
+void alert(BuildContext context, Widget title, Widget content) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: title,
+        content: content,
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("OK"),
+          ),
+        ],
+      );
+    },
+  );
 }
-
