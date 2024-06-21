@@ -1,17 +1,23 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:proyecto_01/main.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:proyecto_01/screens/PlayScreen.dart';
+import 'package:proyecto_01/screens/SeriesScreen.dart';
 
-void main(){
-  runApp(const Catalogo());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(Peliculas());
 }
-class Catalogo extends StatelessWidget {
-  const Catalogo({super.key});
+
+class Peliculas extends StatelessWidget {
+  const Peliculas({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
-      home:Lista(),
+    return MaterialApp(
+      home: Lista(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -23,7 +29,8 @@ class Lista extends StatefulWidget {
 }
 
 class _ListaState extends State<Lista> {
-  List<Map<dynamic, dynamic>> peliculasList = [];
+  List<Map<String, dynamic>> peliculasList = [];
+  int indice = 0;
 
   @override
   void initState() {
@@ -31,77 +38,90 @@ class _ListaState extends State<Lista> {
     getData();
   }
 
-  void getData() {
-    /////////////////////////////////////////
-    /// Función con el objetivo de traer los datos
-    /////////////////////////////////////////
-    
-    DatabaseReference productoRef = FirebaseDatabase.instance.ref('peliculas');
-    productoRef.onValue.listen((DatabaseEvent event) {
-      final data = event.snapshot.value;
-     
-      updateProductList(data);
+  Future<void> getData() async {
+    final response = await http.get(Uri.parse('https://jonathandemond.github.io/apipelis/peliculas.json'));
 
-     
-    });
-    
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data is List) {
+        updateProductList(data);
+      } else {
+        throw Exception('El JSON no es una lista');
+      }
+    } else {
+      throw Exception('Error al cargar los datos');
+    }
   }
 
-  void updateProductList(dynamic data) {
-    if (data != null) {
-      List<Map<dynamic, dynamic>> tempList = [];
-      data.forEach((key, value) {
-        //////////////////////////////////////////
-        /// Se asigna la clave y valor a la lista temporal
-        //////////////////////////////////////////
-        if ( value['pelicula']!= null ){
-        tempList.add({"pelicula": value['pelicula'], "anio": value['año'], "img":value['Imagen'], "titulo":value['titulo'], "video":value['video']});
-         print(data);
-        }
-      });
+  void updateProductList(List<dynamic> data) {
+    List<Map<String, dynamic>> tempList = [];
 
-      setState(() {
-        peliculasList = tempList;
+    data.forEach((element) {
+      tempList.add({
+        "titulo": element['titulo'],
+        "anio": element['anio'],
+        "imagen": element['img'],
+        "video": element['video'],
       });
-    }
+    });
+
+    setState(() {
+      peliculasList = tempList;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> screens = [Cuerpo(), Series()];
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de Peliculas'),
+        title: Text('Lista de Películas'),
       ),
-      body: ListView.builder(
-        itemCount: peliculasList.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            //////////////////////////////////////
-            /// Se manda a imprimir los valores solicitados
-            //////////////////////////////////////
-            
-            title: Text('${peliculasList[index]["pelicula"]} _${peliculasList[index]["titulo"]}'),
-            subtitle: Text('${peliculasList[index]["imagen"]}'),
-            
-          );
+      body: screens[indice],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: indice,
+        onTap: (value) {
+          setState(() {
+            indice = value;
+          });
         },
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Pelis"),
+          BottomNavigationBarItem(icon: Icon(Icons.movie), label: "Movie"),
+        ],
       ),
     );
   }
-}
-Widget Boton1( context) {
-  return ElevatedButton(
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const Proyecto()),
-      );
-    },
-    style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.teal,
-      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-      textStyle: const TextStyle(fontSize: 16),
-    ),
-    child: const Text("SALIR"),
-  );
+
+  Widget Cuerpo() {
+    return ListView.builder(
+      itemCount: peliculasList.length,
+      itemBuilder: (context, index) {
+        return Card(
+          margin: EdgeInsets.all(10),
+          child: ListTile(
+            leading: Image.network(
+              peliculasList[index]["imagen"],
+              width: 50,
+              height: 50,
+              fit: BoxFit.cover,
+            ),
+            title: Text(
+              '${peliculasList[index]["titulo"]}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text('${peliculasList[index]["anio"]}'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VideoPlayerScreen(videoUrl: peliculasList[index]["video"]),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
 }

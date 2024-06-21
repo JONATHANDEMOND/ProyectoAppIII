@@ -130,7 +130,7 @@ Future<void> login(BuildContext context) async {
     );
     
     // Navegación a la pantalla Catálogo
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Catalogo()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Peliculas()));
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
       alert(context, const Text("Error"), const Text("No se encontró un usuario con ese correo."));
