@@ -75,7 +75,15 @@ class _ListaState extends State<Lista> {
     List<Widget> screens = [Cuerpo(), Series()];
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de Películas'),
+        title: Text('Lista de Películas',
+        style: TextStyle(
+    fontSize: 20.0,  // Tamaño del texto
+    fontWeight: FontWeight.bold,  // Texto en negrita
+    color: Colors.black,  // Color del texto
+    letterSpacing: 1.2,  // Espaciado entre caracteres
+    fontStyle: FontStyle.italic,  // Estilo itálico
+    
+  ),),
       ),
       body: screens[indice],
       bottomNavigationBar: BottomNavigationBar(

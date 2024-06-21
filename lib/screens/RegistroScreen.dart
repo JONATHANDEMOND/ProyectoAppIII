@@ -34,12 +34,22 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("REGISTRO"),
+        title: Text(
+          "REGISTRO",
+          style: TextStyle(
+            fontSize: 24.0,  // Tamaño del texto
+            fontWeight: FontWeight.bold,  // Texto en negrita
+            color: Colors.black87,  // Color del texto
+          ),
+        ),
+        backgroundColor: Colors.white,  // Color de fondo del AppBar
+        elevation: 0,  // Sin sombra debajo del AppBar
       ),
       body: Cuerpo(context),
     );
   }
 }
+
 
 Widget Cuerpo(context) {
   return Container(
@@ -50,7 +60,20 @@ Widget Cuerpo(context) {
     padding: EdgeInsets.all(10),
     child: (Column(
       children: <Widget>[
-        const Text("REGISTRO"),
+        const Text(
+  "Registra tus datos personales",
+  style: TextStyle(
+    fontSize: 20.0,  // Tamaño del texto
+    fontWeight: FontWeight.bold,  // Texto en negrita
+    color: Colors.black,  // Color del texto
+    letterSpacing: 1.2,  // Espaciado entre caracteres
+    fontStyle: FontStyle.italic,  // Estilo itálico
+    decoration: TextDecoration.underline,  // Subrayado del texto
+    decorationColor: Color.fromARGB(255, 40, 65, 84),  // Color del subrayado
+    decorationThickness: 2.0,  // Grosor del subrayado
+  ),
+),
+
         CampoNick(context),
         CampoNombre(context),
         CampoEdad(context),
@@ -61,90 +84,125 @@ Widget Cuerpo(context) {
     )),
   );
 }
+
 final TextEditingController _nick = TextEditingController();
-
-Widget CampoNick(context){
+Widget CampoNick(BuildContext context) {
   return Container(
-    padding: EdgeInsets.all(10),
-    child: (
-      TextField(
-        controller: _nick,
-      decoration: const InputDecoration(
-        hintText: "Ingrese Nick Name"),
-    )
-    
+    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+    child: TextField(
+      controller: _nick,
+      decoration: InputDecoration(
+        hintText: "Ingrese Nick Name",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        filled: true,
+        fillColor: Colors.grey[200],
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+      ),
     ),
   );
 }
+
+
 final TextEditingController _nombre = TextEditingController();
-
-Widget CampoNombre(context){
+Widget CampoNombre(BuildContext context) {
   return Container(
-    padding: EdgeInsets.all(10),
-    child: (
-      TextField(
-        controller: _nombre,
-      decoration: const InputDecoration(
-        hintText: "Ingrese Nombre"),
-    )
-    
+    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+    child: TextField(
+      controller: _nombre,
+      decoration: InputDecoration(
+        hintText: "Ingrese Nombre",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        filled: true,
+        fillColor: Colors.grey[200],
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+      ),
     ),
   );
 }
+
 final TextEditingController _edad = TextEditingController();
-
-Widget CampoEdad(context){
+Widget CampoEdad(BuildContext context) {
   return Container(
-    padding: EdgeInsets.all(10),
-    child: (
-      TextField(
-        controller: _edad,
-        keyboardType: TextInputType.number,
-      decoration: const InputDecoration(
-        
-        hintText: "Ingrese Edad"),
-    )
-    
+    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+    child: TextField(
+      controller: _edad,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        hintText: "Ingrese Edad",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        filled: true,
+        fillColor: Colors.grey[200],
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+      ),
     ),
   );
 }
+
 final TextEditingController _correo = TextEditingController();
-
-Widget CampoCorreo(context){
+Widget CampoCorreo(BuildContext context) {
   return Container(
-    padding: EdgeInsets.all(10),
-    child: (
-      TextField(
-        controller: _correo,
-      decoration: const InputDecoration(
-        hintText: "Ingrese Correo"),
-    )
-    
+    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+    child: TextField(
+      controller: _correo,
+      decoration: InputDecoration(
+        hintText: "Ingrese Correo",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        filled: true,
+        fillColor: Colors.grey[200],
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+      ),
     ),
   );
 }
-final TextEditingController _contrasenia= TextEditingController();
-Widget CampoContrasenia(context){
-   return Container(
-    padding: EdgeInsets.all(10),
-     child: (
-    TextField(
-        controller: _contrasenia,
-      decoration: const InputDecoration(
-        hintText: "Ingrese Contraseña"),
-       )
-     
-       ),
-   );
-}
-Widget BotonGuardar(context){
-  return(
-    ElevatedButton(onPressed: (){ registro(context);
-      
-    }, child: const Text("Registro"))
-  );
 
+final TextEditingController _contrasenia = TextEditingController();
+Widget CampoContrasenia(BuildContext context) {
+  return Container(
+    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+    child: TextField(
+      controller: _contrasenia,
+      obscureText: true, // Para ocultar la contraseña
+      decoration: InputDecoration(
+        hintText: "Ingrese Contraseña",
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        filled: true,
+        fillColor: Colors.grey[200],
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+      ),
+    ),
+  );
 }
+
+Widget BotonGuardar(BuildContext context) {
+  return ElevatedButton(
+    onPressed: () {
+      registro(context);
+    },
+    style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.all<Color>(const Color.fromARGB(255, 53, 140, 211)),  // Color de fondo del botón
+      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),  // Color del texto del botón
+      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(15.0)),  // Espaciado interno del botón
+      textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(fontSize: 18.0)),  // Estilo del texto del botón
+      shape: MaterialStateProperty.all<OutlinedBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),  // Bordes redondeados
+        ),
+      ),
+    ),
+    child: Text("Registro"),
+  );
+}
+
 
 Future<void> registro(context) async {
   try {
